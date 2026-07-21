@@ -95,13 +95,13 @@ export interface Notification {
 }
 
 // User store — localStorage backed, seeded with the studio owner on first run
-const USERS_KEY = 'das-users-v1';
+const USERS_KEY = 'das-users-v2';
 
 const SEED_OWNER: UserCredential = {
-  email: 'subhambusiness566@gmail.com',
-  password: 'Subham@ tarzon fx',
+  email: 'dreamavianstudios@gmail.com',
+  password: 'Dr3@mAv!an$2026#',
   role: 'studio_owner',
-  name: 'Subham',
+  name: 'Studio Owner',
   roleTitle: 'Studio Owner',
 };
 
