@@ -6,7 +6,7 @@ import { AIAssistant } from './components/AIAssistant';
 import { DEMO_CREDENTIALS } from './appData';
 
 
-const APP_VERSION = '9.0.0';
+const APP_VERSION = '9.0.1';
 
 
 function App() {
