@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://subham567x5.github.io/Chitra-Spanda-Studios/sitemap.xml
