@@ -31,6 +31,9 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
   const [rememberMe, setRememberMe] = useState(true);
   const [isSignUp, setIsSignUp] = useState(false);
   const [isForgot, setIsForgot] = useState(false);
+  const [mfaStep, setMfaStep] = useState(false);
+  const [mfaCode, setMfaCode] = useState('');
+  const [pendingUser, setPendingUser] = useState<typeof DEMO_CREDENTIALS[0] | null>(null);
   const [signUpName, setSignUpName] = useState('');
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
@@ -81,12 +84,32 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
     setIsLoading(false);
     if (match) {
       setError('');
-      if (rememberMe) localStorage.setItem('cs-auto-login-user', JSON.stringify(match));
-      else localStorage.removeItem('cs-auto-login-user');
-      onLoginSuccess(match);
+      setPendingUser(match);
+      setMfaStep(true);
     } else {
       setError('Invalid email or password. Please check your credentials.');
       triggerShake();
+    }
+  };
+
+  const handleMfaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mfaCode) return;
+    setIsLoading(true);
+    await new Promise(r => setTimeout(r, 600));
+    setIsLoading(false);
+    
+    if (mfaCode === '123456') {
+      setError('');
+      if (pendingUser) {
+        if (rememberMe) localStorage.setItem('cs-auto-login-user', JSON.stringify(pendingUser));
+        else localStorage.removeItem('cs-auto-login-user');
+        onLoginSuccess(pendingUser);
+      }
+    } else {
+      setError('Invalid authentication code. Please try again.');
+      triggerShake();
+      setMfaCode('');
     }
   };
 
@@ -142,7 +165,7 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
     }
   };
 
-  const view = isSignUp ? 'signup' : isForgot ? 'forgot' : 'login';
+  const view = mfaStep ? 'mfa' : isSignUp ? 'signup' : isForgot ? 'forgot' : 'login';
 
   return (
     <>
@@ -581,9 +604,9 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
         <div className="fresh-right">
           <div ref={cardRef} className={`fresh-card-inner${shake ? ' shake' : ''}`}>
 
-            {/* Back button (for forgot/signup views) */}
-            {(isForgot || isSignUp) && (
-              <button className="fresh-back-btn" onClick={() => { setIsForgot(false); setIsSignUp(false); setError(''); setSuccess(''); }}>
+            {/* Back button (for forgot/signup/mfa views) */}
+            {(isForgot || isSignUp || mfaStep) && (
+              <button className="fresh-back-btn" onClick={() => { setIsForgot(false); setIsSignUp(false); setMfaStep(false); setError(''); setSuccess(''); }}>
                 <ArrowLeft size={15} /> Back to Sign In
               </button>
             )}
@@ -595,11 +618,12 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
 
             {/* Heading */}
             <div className="fresh-heading">
-              {view === 'login' ? 'Welcome back' : view === 'signup' ? 'Create account' : 'Recover access'}
+              {view === 'login' ? 'Welcome back' : view === 'signup' ? 'Create account' : view === 'mfa' ? 'Security Check' : 'Recover access'}
             </div>
             <div className="fresh-subheading">
               {view === 'login' ? 'Sign in to your DreamAvian Studios portal'
                 : view === 'signup' ? 'Join the DreamAvian Studios team'
+                : view === 'mfa' ? 'Enter your 6-digit authenticator code'
                 : 'Enter your email to retrieve your credentials'}
             </div>
 
@@ -659,6 +683,27 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
                     Create one free
                   </button>
                 </div>
+              </form>
+            )}
+
+            {/* ── MFA FORM ── */}
+            {view === 'mfa' && (
+              <form onSubmit={handleMfaSubmit}>
+                <div className="fresh-field">
+                  <label>MFA Code</label>
+                  <div className="fresh-input-wrap">
+                    <Lock size={16} className="fi-icon" />
+                    <input type="text" className="fresh-input" placeholder="123456"
+                      value={mfaCode} onChange={e => setMfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))} required autoFocus />
+                  </div>
+                  <div className="fresh-email-hint" style={{ color: 'rgba(255,255,255,0.3)', marginTop: '8px', justifyContent: 'center' }}>
+                    💡 In development environment, use code: 123456
+                  </div>
+                </div>
+
+                <button type="submit" className="fresh-submit" disabled={isLoading || mfaCode.length !== 6}>
+                  {isLoading ? <div className="fresh-dots"><span /><span /><span /></div> : <><Sparkles size={16} /> Verify Identity</>}
+                </button>
               </form>
             )}
 
