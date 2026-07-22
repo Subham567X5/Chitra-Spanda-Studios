@@ -383,7 +383,7 @@ export const Dashboards: React.FC<DashboardsProps> = ({ role, userEmail, userNam
     fetch(`${API_URL}/api/projects`)
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setProjects(data);
         } else {
           // Fallback to local storage if backend is empty/offline for demo resilience
@@ -399,7 +399,7 @@ export const Dashboards: React.FC<DashboardsProps> = ({ role, userEmail, userNam
     fetch(`${API_URL}/api/tasks`)
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setTasks(data);
         } else {
           const saved = localStorage.getItem('cs-tasks');
@@ -846,6 +846,10 @@ export const Dashboards: React.FC<DashboardsProps> = ({ role, userEmail, userNam
   React.useEffect(() => {
     safeLocalStorageSetItem('cs-founder-story', JSON.stringify(founderStory));
   }, [founderStory]);
+
+  // Password change states
+  const [ownerPasswordInput, setOwnerPasswordInput] = useState('');
+  const [ownerPasswordMessage, setOwnerPasswordMessage] = useState('');
 
   // 1. Sync from user profile settings avatar (App.tsx prop) to founder story image
   React.useEffect(() => {
@@ -2984,6 +2988,59 @@ export const Dashboards: React.FC<DashboardsProps> = ({ role, userEmail, userNam
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Security Settings */}
+      <div style={{ ...styles.fullRow, marginTop: '20px' }} className="glass-panel animate-fade-in">
+        <h3 style={styles.subTitle} className="text-gradient">Security & Credentials</h3>
+        <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '14px' }}>
+          Update your Studio Owner portal password here.
+        </p>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div style={{ position: 'relative', width: '300px' }}>
+            <Lock size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '10px' }} />
+            <input 
+              type="password" 
+              placeholder="Enter New Password" 
+              value={ownerPasswordInput}
+              onChange={(e) => setOwnerPasswordInput(e.target.value)}
+              style={{ 
+                width: '100%', 
+                padding: '8px 12px 8px 36px', 
+                background: 'rgba(0,0,0,0.4)', 
+                border: '1px solid var(--border-color)', 
+                borderRadius: '6px', 
+                color: '#fff', 
+                fontSize: '13px' 
+              }}
+            />
+          </div>
+          <button 
+            className="btn-primary" 
+            style={{ padding: '8px 16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}
+            disabled={!ownerPasswordInput.trim()}
+            onClick={() => {
+              if (onUpdateCredential && credentials) {
+                const currentCred = credentials.find(c => c.email.toLowerCase() === userEmail.toLowerCase());
+                if (currentCred) {
+                  onUpdateCredential(userEmail, { ...currentCred, password: ownerPasswordInput });
+                  setOwnerPasswordMessage('Password updated successfully!');
+                  setOwnerPasswordInput('');
+                  setTimeout(() => setOwnerPasswordMessage(''), 3000);
+                } else {
+                  setOwnerPasswordMessage('Error: Current credential not found.');
+                }
+              }
+            }}
+          >
+            <ShieldAlert size={14} /> Update Password
+          </button>
+          {ownerPasswordMessage && (
+            <span style={{ fontSize: '12px', color: ownerPasswordMessage.includes('Error') ? 'var(--danger)' : 'var(--success)' }}>
+              {ownerPasswordMessage}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Recent Employee Work Activity */}

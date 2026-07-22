@@ -788,22 +788,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>FULL NAME</span>
-                  {!(user.role === 'studio_owner' || user.role === 'super_admin') && (
-                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      <Lock size={10} /> LOCKED
-                    </span>
-                  )}
                 </div>
                 <input 
                   type="text" 
                   className="glass-input" 
                   value={profileName} 
                   onChange={(e) => setProfileName(e.target.value)}
-                  disabled={!(user.role === 'studio_owner' || user.role === 'super_admin')}
                   style={{ 
                     fontSize: '13px', 
-                    opacity: (user.role === 'studio_owner' || user.role === 'super_admin') ? 1 : 0.6,
-                    cursor: (user.role === 'studio_owner' || user.role === 'super_admin') ? 'text' : 'not-allowed'
+                    opacity: 1,
+                    cursor: 'text'
                   }}
                 />
               </div>
@@ -812,22 +806,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>ROLE TITLE</span>
-                  {!(user.role === 'studio_owner' || user.role === 'super_admin') && (
-                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      <Lock size={10} /> LOCKED
-                    </span>
-                  )}
                 </div>
                 <input 
                   type="text" 
                   className="glass-input" 
                   value={profileRoleTitle} 
                   onChange={(e) => setProfileRoleTitle(e.target.value)}
-                  disabled={!(user.role === 'studio_owner' || user.role === 'super_admin')}
                   style={{ 
                     fontSize: '13px', 
-                    opacity: (user.role === 'studio_owner' || user.role === 'super_admin') ? 1 : 0.6,
-                    cursor: (user.role === 'studio_owner' || user.role === 'super_admin') ? 'text' : 'not-allowed'
+                    opacity: 1,
+                    cursor: 'text'
                   }}
                 />
               </div>
@@ -836,22 +824,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>EMAIL ADDRESS</span>
-                  {!(user.role === 'studio_owner' || user.role === 'super_admin') && (
-                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      <Lock size={10} /> LOCKED
-                    </span>
-                  )}
                 </div>
                 <input 
                   type="email" 
                   className="glass-input" 
                   value={profileEmail} 
                   onChange={(e) => setProfileEmail(e.target.value)}
-                  disabled={!(user.role === 'studio_owner' || user.role === 'super_admin')}
                   style={{ 
                     fontSize: '13px', 
-                    opacity: (user.role === 'studio_owner' || user.role === 'super_admin') ? 1 : 0.6,
-                    cursor: (user.role === 'studio_owner' || user.role === 'super_admin') ? 'text' : 'not-allowed'
+                    opacity: 1,
+                    cursor: 'text'
                   }}
                 />
               </div>
@@ -860,11 +842,6 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>PHONE / CONTACT</span>
-                  {!(user.role === 'studio_owner' || user.role === 'super_admin') && (
-                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      <Lock size={10} /> LOCKED
-                    </span>
-                  )}
                 </div>
                 <input 
                   type="text" 
@@ -872,11 +849,10 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
                   value={profilePhone} 
                   placeholder="No contact registered"
                   onChange={(e) => setProfilePhone(e.target.value)}
-                  disabled={!(user.role === 'studio_owner' || user.role === 'super_admin')}
                   style={{ 
                     fontSize: '13px', 
-                    opacity: (user.role === 'studio_owner' || user.role === 'super_admin') ? 1 : 0.6,
-                    cursor: (user.role === 'studio_owner' || user.role === 'super_admin') ? 'text' : 'not-allowed'
+                    opacity: 1,
+                    cursor: 'text'
                   }}
                 />
               </div>
@@ -885,22 +861,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>ACCESS PASSWORD</span>
-                  {!(user.role === 'studio_owner' || user.role === 'super_admin') && (
-                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                      <Lock size={10} /> LOCKED
-                    </span>
-                  )}
                 </div>
                 <input 
                   type="password" 
                   className="glass-input" 
                   value={profilePassword} 
                   onChange={(e) => setProfilePassword(e.target.value)}
-                  disabled={!(user.role === 'studio_owner' || user.role === 'super_admin')}
                   style={{ 
                     fontSize: '13px', 
-                    opacity: (user.role === 'studio_owner' || user.role === 'super_admin') ? 1 : 0.6,
-                    cursor: (user.role === 'studio_owner' || user.role === 'super_admin') ? 'text' : 'not-allowed'
+                    opacity: 1,
+                    cursor: 'text'
                   }}
                 />
               </div>
