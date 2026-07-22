@@ -82,6 +82,62 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+// ==========================
+// API Endpoints for Projects
+// ==========================
+app.get('/api/projects', (req, res) => {
+  db.all("SELECT * FROM projects", [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to fetch projects' });
+    }
+    res.json(rows);
+  });
+});
+
+app.post('/api/projects', (req, res) => {
+  const { id, name, description, status, budget, completion } = req.body;
+  if (!id || !name) return res.status(400).json({ error: 'Missing required fields' });
+
+  const stmt = db.prepare("INSERT INTO projects (id, name, description, status, budget, completion) VALUES (?, ?, ?, ?, ?, ?)");
+  stmt.run(id, name, description, status || 'Planning', budget || '$0', completion || 0, function(err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to create project' });
+    }
+    res.status(201).json({ message: 'Project created successfully' });
+  });
+  stmt.finalize();
+});
+
+// ==========================
+// API Endpoints for Tasks
+// ==========================
+app.get('/api/tasks', (req, res) => {
+  db.all("SELECT * FROM tasks", [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to fetch tasks' });
+    }
+    res.json(rows);
+  });
+});
+
+app.post('/api/tasks', (req, res) => {
+  const { id, name, description, assignedTo, status, priority, dueDate, projectName } = req.body;
+  if (!id || !name) return res.status(400).json({ error: 'Missing required fields' });
+
+  const stmt = db.prepare("INSERT INTO tasks (id, name, description, assignedTo, status, priority, dueDate, projectName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+  stmt.run(id, name, description, assignedTo, status || 'To Do', priority || 'Medium', dueDate, projectName, function(err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to create task' });
+    }
+    res.status(201).json({ message: 'Task created successfully' });
+  });
+  stmt.finalize();
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Secure Backend Server running on http://localhost:${PORT}`);

@@ -373,27 +373,44 @@ export const Dashboards: React.FC<DashboardsProps> = ({ role, userEmail, userNam
   const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline'>('synced');
   const isInitialLoadRef = React.useRef(true);
   // Shared Local Database States loaded from localStorage
-  const [projects, setProjects] = useState<any[]>(() => {
-    const saved = localStorage.getItem('cs-projects');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed && parsed.length > 0) return parsed;
-      } catch (e) {}
-    }
-    return [];
-  });
+  const [projects, setProjects] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
 
-  const [tasks] = useState<any[]>(() => {
-    const saved = localStorage.getItem('cs-tasks');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed && parsed.length > 0) return parsed;
-      } catch (e) {}
-    }
-    return [];
-  });
+  // V2: Fetch projects and tasks from the secure backend
+  React.useEffect(() => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    
+    fetch(`${API_URL}/api/projects`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProjects(data);
+        } else {
+          // Fallback to local storage if backend is empty/offline for demo resilience
+          const saved = localStorage.getItem('cs-projects');
+          if (saved) setProjects(JSON.parse(saved));
+        }
+      })
+      .catch(() => {
+        const saved = localStorage.getItem('cs-projects');
+        if (saved) setProjects(JSON.parse(saved));
+      });
+
+    fetch(`${API_URL}/api/tasks`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTasks(data);
+        } else {
+          const saved = localStorage.getItem('cs-tasks');
+          if (saved) setTasks(JSON.parse(saved));
+        }
+      })
+      .catch(() => {
+        const saved = localStorage.getItem('cs-tasks');
+        if (saved) setTasks(JSON.parse(saved));
+      });
+  }, []);
 
   const [attendance, setAttendance] = useState<any[]>(() => {
     const saved = localStorage.getItem('cs-attendance');
@@ -3627,6 +3644,14 @@ export const Dashboards: React.FC<DashboardsProps> = ({ role, userEmail, userNam
         fileType: projFormFileType || undefined,
         externalUrl: projFormExternalUrl.trim() || undefined
       };
+
+      // V2: Send to backend
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      fetch(`${API_URL}/api/projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProject)
+      }).catch(e => console.error("Backend sync failed:", e));
 
       if (editingProjectId) {
         setProjects(prev => prev.map(p => p.id === editingProjectId ? newProject : p));
