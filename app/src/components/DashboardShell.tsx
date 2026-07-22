@@ -775,7 +775,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center' }}>
             {/* Avatar Uploader Section (Left Column) */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', flexShrink: 0, width: '130px' }}>
-              <div style={{
+              <label style={{
                 width: '100px',
                 height: '100px',
                 borderRadius: '16px',
@@ -786,7 +786,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
                 alignItems: 'center',
                 justifyContent: 'center',
                 overflow: 'hidden',
-                position: 'relative'
+                position: 'relative',
+                cursor: 'pointer'
               }}>
                 {profileAvatar ? (
                   <img src={profileAvatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -795,7 +796,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
                     {profileName.charAt(0)}
                   </span>
                 )}
-              </div>
+                <input type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: 'none' }} />
+              </label>
               <label className="btn-secondary" style={{ padding: '6px 12px', fontSize: '10px', cursor: 'pointer', textAlign: 'center', width: '100%' }}>
                 <span>CHANGE IMAGE</span>
                 <input type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: 'none' }} />
