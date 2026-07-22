@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { AI_MOCK_RESPONSES } from '../appData';
 
 import { Send, Sparkles, HelpCircle } from 'lucide-react';
 
