@@ -81,7 +81,8 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
     setIsLoading(true);
     await new Promise(r => setTimeout(r, 700));
     try {
-      const response = await fetch('http://localhost:3001/api/login', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -139,7 +140,8 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
     setIsLoading(true);
     
     try {
-      const response = await fetch('http://localhost:3001/api/register', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_URL}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
