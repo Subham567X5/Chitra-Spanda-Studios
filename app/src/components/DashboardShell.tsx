@@ -237,30 +237,51 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
     }
   };
 
-  const handleSaveProfile = () => {
-    if (onUpdateUser) {
-      onUpdateUser({
-        ...user,
-        name: profileName,
-        email: profileEmail,
-        phone: profilePhone,
-        roleTitle: profileRoleTitle,
-        avatar: profileAvatar,
-        password: profilePassword
+  const handleSaveProfile = async () => {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${API_URL}/api/update-profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: profileEmail,
+          password: profilePassword,
+          name: profileName,
+          roleTitle: profileRoleTitle
+        })
       });
-      playBeep(1200, 0.25);
       
-      if (voiceEnabled) {
-        try {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance("Profile updated successfully.");
-          utterance.rate = 1.1;
-          utterance.volume = 0.6;
-          window.speechSynthesis.speak(utterance);
-        } catch (e) {}
+      if (!response.ok) {
+        throw new Error('Failed to update profile on server');
       }
       
-      alert('💾 Profile settings committed successfully!');
+      if (onUpdateUser) {
+        onUpdateUser({
+          ...user,
+          name: profileName,
+          email: profileEmail,
+          phone: profilePhone,
+          roleTitle: profileRoleTitle,
+          avatar: profileAvatar,
+          password: profilePassword
+        });
+        playBeep(1200, 0.25);
+        
+        if (voiceEnabled) {
+          try {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance("Profile updated successfully.");
+            utterance.rate = 1.1;
+            utterance.volume = 0.6;
+            window.speechSynthesis.speak(utterance);
+          } catch (e) {}
+        }
+        
+        alert('💾 Profile settings committed successfully!');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('⚠️ Error updating profile settings.');
     }
   };
 

@@ -82,6 +82,42 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+app.post('/api/update-profile', async (req, res) => {
+  const { email, password, name, roleTitle } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required.' });
+  }
+
+  try {
+    let query = "UPDATE users SET name = ?, roleTitle = ?";
+    let params = [name, roleTitle];
+
+    if (password) {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      query += ", password = ?";
+      params.push(hashedPassword);
+    }
+    
+    query += " WHERE email = ?";
+    params.push(email.toLowerCase());
+
+    const stmt = db.prepare(query);
+    stmt.run(...params, function(err) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Failed to update profile.' });
+      }
+      res.json({ message: 'Profile updated successfully.' });
+    });
+    stmt.finalize();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error updating profile.' });
+  }
+});
+
 // ==========================
 // API Endpoints for Projects
 // ==========================
