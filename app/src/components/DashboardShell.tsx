@@ -738,16 +738,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
           <Activity size={24} className="pulse-glow" style={{ color: 'var(--accent-color)' }} />
         </div>
         {/* User Profile Console Editor */}
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px' }}>
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', background: 'rgba(6, 182, 212, 0.1)', border: '2px solid var(--accent-color)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(6,182,212,0.3)', paddingBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <User size={18} style={{ color: 'var(--accent-color)' }} />
-              <h3 style={{ fontSize: '14px', fontWeight: 'bold', fontFamily: 'var(--font-display)', letterSpacing: '0.5px', color: '#fff', margin: 0 }}>
-                USER PROFILE CONSOLE EDITOR
+              <User size={24} style={{ color: 'var(--accent-color)' }} />
+              <h3 style={{ fontSize: '18px', fontWeight: 'bold', fontFamily: 'var(--font-display)', letterSpacing: '0.5px', color: 'var(--accent-color)', margin: 0, textShadow: '0 0 10px rgba(6,182,212,0.5)' }}>
+                ⭐ UPDATE YOUR PROFILE (ID, PASSWORD, IMAGE) ⭐
               </h3>
             </div>
-            <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)' }}>
-              ROLE_ACCESS: {user.roleTitle.toUpperCase()}
+            <span style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', background: 'var(--accent-color)', padding: '4px 10px', borderRadius: '4px', fontWeight: 'bold', color: '#000' }}>
+              ACCESS GRANTED
             </span>
           </div>
 
@@ -776,7 +776,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
                 )}
               </div>
               <label className="btn-secondary" style={{ padding: '6px 12px', fontSize: '10px', cursor: 'pointer', textAlign: 'center', width: '100%' }}>
-                <span>UPLOAD PHOTO</span>
+                <span>CHANGE IMAGE</span>
                 <input type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: 'none' }} />
               </label>
             </div>
@@ -823,7 +823,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               {/* Field: Email */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>EMAIL ADDRESS</span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>CHANGE ID (EMAIL)</span>
                 </div>
                 <input 
                   type="email" 
@@ -860,7 +860,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
               {/* Field: Password */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>ACCESS PASSWORD</span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>CHANGE PASSWORD</span>
                 </div>
                 <input 
                   type="password" 
