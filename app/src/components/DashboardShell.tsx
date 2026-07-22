@@ -1135,7 +1135,11 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
             <span style={styles.logoText}>DA Portal</span>
           </div>
 
-          <div style={styles.userSection}>
+          <div 
+            style={{ ...styles.userSection, cursor: 'pointer' }}
+            onClick={() => setActiveTab('Settings')}
+            title="Click to change ID, Password, or Image"
+          >
             <div style={styles.avatar}>
               {user.avatar ? (
                 <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }} />
