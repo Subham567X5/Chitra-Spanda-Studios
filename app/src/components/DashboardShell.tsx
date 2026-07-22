@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DEMO_CREDENTIALS, MOCK_NOTIFICATIONS } from '../appData';
 
 
-import { Bell, Sparkles, LogOut, Cpu, Menu, User, Settings, FolderKanban, CheckSquare, Layers, BookOpen, UserCheck, Shield, FileText, ShieldAlert, Mail, AlertTriangle, Search, Trash2, CheckCircle, Inbox, Clock, Activity, Volume2, Lock, Monitor, RefreshCw, Database, Upload, Users, Download } from 'lucide-react';
+import { Bell, Sparkles, LogOut, Cpu, Menu, User, Settings, FolderKanban, CheckSquare, Layers, BookOpen, UserCheck, Shield, FileText, ShieldAlert, Mail, AlertTriangle, Search, Trash2, CheckCircle, Inbox, Clock, Activity, Volume2, Lock, Monitor, RefreshCw, Database, Upload, Users, Download, X } from 'lucide-react';
 import logoImg from '../assets/logo.jpg';
 
 interface DashboardShellProps {
@@ -215,6 +215,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
   const [profileRoleTitle, setProfileRoleTitle] = useState(user.roleTitle);
   const [profileAvatar, setProfileAvatar] = useState(user.avatar || '');
   const [profilePassword, setProfilePassword] = useState(user.password || '');
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   React.useEffect(() => {
     setProfileName(user.name);
@@ -1137,7 +1138,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
 
           <div 
             style={{ ...styles.userSection, cursor: 'pointer' }}
-            onClick={() => setActiveTab('Settings')}
+            onClick={() => setProfileModalOpen(true)}
             title="Click to change ID, Password, or Image"
           >
             <div style={styles.avatar}>
@@ -1247,6 +1248,50 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ user, onLogout, 
           {activeTab === 'Notifications' ? renderNotificationsView() : activeTab === 'Settings' ? renderSettingsView() : children}
         </main>
       </div>
+      {profileModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 100000, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(5px)' }}>
+          <div className="glass-panel" style={{ width: '400px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', background: 'rgba(6, 182, 212, 0.1)', border: '2px solid var(--accent-color)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(6,182,212,0.3)', paddingBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <User size={24} style={{ color: 'var(--accent-color)' }} />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', fontFamily: 'var(--font-display)', color: 'var(--accent-color)', margin: 0, textShadow: '0 0 10px rgba(6,182,212,0.5)' }}>
+                  UPDATE PROFILE
+                </h3>
+              </div>
+              <button onClick={() => setProfileModalOpen(false)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}><X size={20} /></button>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                <label style={{
+                  width: '80px', height: '80px', borderRadius: '16px', border: '2px solid var(--accent-color)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', cursor: 'pointer'
+                }}>
+                  {profileAvatar ? (
+                    <img src={profileAvatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--accent-color)' }}>{profileName.charAt(0)}</span>
+                  )}
+                  <input type="file" accept="image/*" onChange={handleAvatarChange} style={{ display: 'none' }} />
+                </label>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>CLICK TO CHANGE IMAGE</span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>CHANGE ID (EMAIL)</span>
+                <input type="email" className="glass-input" value={profileEmail} onChange={(e) => setProfileEmail(e.target.value)} style={{ fontSize: '13px' }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>CHANGE PASSWORD</span>
+                <input type="password" className="glass-input" value={profilePassword} onChange={(e) => setProfilePassword(e.target.value)} style={{ fontSize: '13px' }} />
+              </div>
+              <button className="btn-primary" onClick={() => { handleSaveProfile(); setProfileModalOpen(false); }} style={{ marginTop: '10px', width: '100%' }}>
+                SAVE CHANGES
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
