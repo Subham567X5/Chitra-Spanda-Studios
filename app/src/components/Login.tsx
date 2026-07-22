@@ -80,14 +80,28 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
     e.preventDefault();
     setIsLoading(true);
     await new Promise(r => setTimeout(r, 700));
-    const match = credentials.find(c => c.email.toLowerCase() === email.toLowerCase() && c.password === password);
-    setIsLoading(false);
-    if (match) {
-      setError('');
-      setPendingUser(match);
-      setMfaStep(true);
-    } else {
-      setError('Invalid email or password. Please check your credentials.');
+    try {
+      const response = await fetch('http://localhost:3001/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await response.json();
+      setIsLoading(false);
+
+      if (response.ok) {
+        setError('');
+        // We temporarily store the user and the JWT token on the pendingUser object
+        setPendingUser({ ...data.user, token: data.token });
+        setMfaStep(true);
+      } else {
+        setError(data.error || 'Invalid email or password. Please check your credentials.');
+        triggerShake();
+      }
+    } catch (err) {
+      setIsLoading(false);
+      setError('Unable to connect to the secure authentication server.');
       triggerShake();
     }
   };
@@ -121,24 +135,42 @@ export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, on
     const result = emailValidator.validate(signUpEmail, 'signup-' + (navigator.userAgent || 'ua').slice(0, 40));
     if (!result.valid) { setError(result.message); triggerShake(); return; }
     if (signUpPassword.length < 6) { setError('Password must be at least 6 characters long.'); triggerShake(); return; }
-    const exists = credentials.some(c => c.email.toLowerCase() === signUpEmail.toLowerCase());
-    if (exists) { setError('An account with this email already exists.'); triggerShake(); return; }
 
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 800));
-    setIsLoading(false);
+    
+    try {
+      const response = await fetch('http://localhost:3001/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: signUpEmail,
+          password: signUpPassword,
+          name: signUpName,
+          role: signUpRole,
+          roleTitle: roleTitles[signUpRole] || 'Staff Member'
+        })
+      });
+      
+      const data = await response.json();
+      setIsLoading(false);
 
-    const newCred = { email: signUpEmail, password: signUpPassword, role: signUpRole, name: signUpName, roleTitle: roleTitles[signUpRole] || 'Staff Member' };
-    // Persist to localStorage via appData
-    registerUser(newCred);
-    if (onRegisterAccount) onRegisterAccount(newCred);
-    setError('');
-    setSuccess(`🎉 Welcome, ${signUpName}! Your account is ready.`);
-    setTimeout(() => {
-      setEmail(signUpEmail); setPassword(signUpPassword);
-      setIsSignUp(false); setSuccess('');
-      setSignUpName(''); setSignUpEmail(''); setSignUpPassword(''); setSignUpRole('client');
-    }, 2000);
+      if (response.ok) {
+        setError('');
+        setSuccess(`🎉 Welcome, ${signUpName}! Your account is ready.`);
+        setTimeout(() => {
+          setEmail(signUpEmail); setPassword(signUpPassword);
+          setIsSignUp(false); setSuccess('');
+          setSignUpName(''); setSignUpEmail(''); setSignUpPassword(''); setSignUpRole('client');
+        }, 2000);
+      } else {
+        setError(data.error || 'Registration failed.');
+        triggerShake();
+      }
+    } catch (err) {
+      setIsLoading(false);
+      setError('Unable to connect to the secure server.');
+      triggerShake();
+    }
   };
 
 

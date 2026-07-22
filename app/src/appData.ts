@@ -94,36 +94,11 @@ export interface Notification {
   read: boolean;
 }
 
-// User store — localStorage backed, seeded with the studio owner on first run
-const USERS_KEY = 'das-users-v2';
-
-const SEED_OWNER: UserCredential = {
-  email: 'dreamavianstudios@gmail.com',
-  password: 'Dr3@mAv!an$2026#',
-  role: 'studio_owner',
-  name: 'Studio Owner',
-  roleTitle: 'Studio Owner',
-};
-
-function loadUsers(): UserCredential[] {
-  try {
-    const s = localStorage.getItem(USERS_KEY);
-    if (s) return JSON.parse(s) as UserCredential[];
-  } catch (_) {}
-  const initial = [SEED_OWNER];
-  try { localStorage.setItem(USERS_KEY, JSON.stringify(initial)); } catch (_) {}
-  return initial;
-}
-
-function saveUsers(users: UserCredential[]): void {
-  try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); } catch (_) {}
-}
-
-export const DEMO_CREDENTIALS: UserCredential[] = loadUsers();
+// Removed local storage user storage for security
+export const DEMO_CREDENTIALS: UserCredential[] = [];
 
 export function registerUser(newUser: UserCredential): void {
-  DEMO_CREDENTIALS.push(newUser);
-  saveUsers(DEMO_CREDENTIALS);
+  // Now handled by the secure backend
 }
 
 // Empty runtime arrays
