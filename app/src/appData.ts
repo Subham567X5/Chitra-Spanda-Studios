@@ -97,10 +97,6 @@ export interface Notification {
 // Removed local storage user storage for security
 export const DEMO_CREDENTIALS: UserCredential[] = [];
 
-export function registerUser(newUser: UserCredential): void {
-  // Now handled by the secure backend
-}
-
 // Empty runtime arrays
 export const MOCK_PROJECTS: Project[] = [];
 export const MOCK_TASKS: Task[] = [];

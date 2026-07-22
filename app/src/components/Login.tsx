@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { DEMO_CREDENTIALS, registerUser } from '../appData';
+import { DEMO_CREDENTIALS } from '../appData';
 
 import { emailValidator } from '../utils/emailValidation';
 import { Lock, Mail, User, Eye, EyeOff, ChevronDown, ArrowLeft, Sparkles } from 'lucide-react';
@@ -21,7 +21,7 @@ const Particle = ({ style }: { style: React.CSSProperties }) => (
   }} />
 );
 
-export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, onLoginSuccess, onRegisterAccount }) => {
+export const Login: React.FC<LoginProps> = ({ credentials = DEMO_CREDENTIALS, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
