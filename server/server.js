@@ -138,6 +138,33 @@ app.post('/api/tasks', (req, res) => {
   stmt.finalize();
 });
 
+// ==========================
+// API Endpoint for Simulated Advanced AI
+// ==========================
+app.post('/api/ai/chat', (req, res) => {
+  const { message, role } = req.body;
+  if (!message) return res.status(400).json({ error: 'Message required' });
+
+  let responseText = "I am processing your request. All studio systems are online.";
+  const msgLower = message.toLowerCase();
+
+  // Simulated Advanced AI Logic
+  if (msgLower.includes('maya') || msgLower.includes('blender')) {
+    responseText = "Initializing 3D software support module...\n\n```python\nimport maya.cmds as cmds\n# Quick script to center pivot and freeze transforms\nselection = cmds.ls(selection=True)\nfor obj in selection:\n    cmds.xform(obj, centerPivots=True)\n    cmds.makeIdentity(obj, apply=True, t=1, r=1, s=1, n=0)\n```\n\nScript executed. Your rig should now be optimized.";
+  } else if (msgLower.includes('budget') || msgLower.includes('invoice')) {
+    responseText = "Accessing Studio Finance ledgers...\n\nCurrent quarterly expenditure is well within the projected $150,000 budget constraint. Would you like me to generate a PDF breakdown?";
+  } else if (msgLower.includes('render') || msgLower.includes('farm')) {
+    responseText = "[SYSTEM ALERT] Render farm utilization is currently at 87%.\n\nI have automatically prioritized the 'DreamLink Alpha' sequence. ETA for completion is 2 hours 14 minutes.";
+  } else {
+    responseText = `Acknowledged. As a ${role || 'user'}, you have clearance for this operation. I have updated the studio logs. Is there anything else you need?`;
+  }
+
+  // Simulate "thinking" delay
+  setTimeout(() => {
+    res.json({ reply: responseText });
+  }, 1200);
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Secure Backend Server running on http://localhost:${PORT}`);

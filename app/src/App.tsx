@@ -215,6 +215,8 @@ function App() {
 
   return (
     <>
+      <div className="advanced-orb-1"></div>
+      <div className="advanced-orb-2"></div>
       {!user ? (
         <Login 
           credentials={credentials} 

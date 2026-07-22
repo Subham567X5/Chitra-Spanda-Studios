@@ -355,3 +355,105 @@ body.no-grid {
   background-image: radial-gradient(circle at 10% 20%, rgba(192, 132, 252, 0.08) 0%, transparent 40%),
                     radial-gradient(circle at 90% 80%, rgba(167, 255, 210, 0.08) 0%, transparent 40%) !important;
 }
+
+/* ========================================= */
+/* VERSION 2 PHASE 2: ADVANCED VISUAL EFFECTS */
+/* ========================================= */
+
+/* 1. Floating Neon Orbs in Background */
+@keyframes floatOrb1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+  33% { transform: translate(100px, -150px) scale(1.2); opacity: 0.5; }
+  66% { transform: translate(-50px, -250px) scale(0.9); opacity: 0.2; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+}
+
+@keyframes floatOrb2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+  33% { transform: translate(-150px, 100px) scale(1.1); opacity: 0.4; }
+  66% { transform: translate(100px, 200px) scale(0.8); opacity: 0.1; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+}
+
+body::after {
+  /* Retain scanlines but add glowing orb backgrounds directly to body using multiple gradients */
+}
+
+.advanced-orb-1, .advanced-orb-2 {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(80px);
+}
+
+.advanced-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--primary-color), transparent 70%);
+  top: 20%;
+  left: 10%;
+  animation: floatOrb1 20s infinite ease-in-out;
+}
+
+.advanced-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--accent-color), transparent 70%);
+  bottom: 10%;
+  right: 5%;
+  animation: floatOrb2 25s infinite ease-in-out reverse;
+}
+
+/* 2. Holographic Glitch Hover Effects */
+.btn-primary, .btn-secondary, .glass-card {
+  position: relative;
+}
+
+.btn-primary:hover::before, .glass-card:hover::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -2px; width: 100%; height: 100%;
+  background: rgba(192, 132, 252, 0.2);
+  mix-blend-mode: screen;
+  z-index: -1;
+  animation: rgbShiftLeft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+.btn-primary:hover::after, .glass-card:hover::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 2px; width: 100%; height: 100%;
+  background: rgba(167, 255, 210, 0.2);
+  mix-blend-mode: screen;
+  z-index: -1;
+  animation: rgbShiftRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+@keyframes rgbShiftLeft {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(1px, -2px); }
+}
+
+@keyframes rgbShiftRight {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(2px, -1px); }
+  40% { transform: translate(1px, 1px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(-1px, 2px); }
+}
+
+/* 3. Terminal Typing Cursor */
+.cyber-cursor::after {
+  content: '█';
+  animation: blink 1s step-start infinite;
+  color: var(--accent-color);
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}

@@ -11,8 +11,8 @@ interface AIAssistantProps {
 }
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ role, roleTitle, isOpen, onClose }) => {
-  const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string }>>([
-    { sender: 'ai', text: `Welcome! I am calibrated for the ${roleTitle} portal. Ask me anything about your current tasks, metrics, or scripts.` }
+  const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; isTyping?: boolean }>>([
+    { sender: 'ai', text: `Welcome! I am calibrated for the ${roleTitle} portal. All systems online.`, isTyping: true }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -34,7 +34,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ role, roleTitle, isOpe
     return suggestions[role] || ["Summarize my active task", "Check schedule deadlines", "How to submit files"];
   };
 
-  const handleSend = (text: string) => {
+  const handleSend = async (text: string) => {
     if (!text.trim()) return;
     
     // Add user message
@@ -42,27 +42,47 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ role, roleTitle, isOpe
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI thinking and replying
-    setTimeout(() => {
-      let aiText = AI_MOCK_RESPONSES[role] || AI_MOCK_RESPONSES.default;
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${API_URL}/api/ai/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, role })
+      });
+      const data = await res.json();
       
-      // Add custom prompt simple matches
-      const promptLower = text.toLowerCase();
-      if (promptLower.includes('maya') || promptLower.includes('python')) {
-        aiText = AI_MOCK_RESPONSES.animator;
-      } else if (promptLower.includes('risk') || promptLower.includes('budget')) {
-        aiText = AI_MOCK_RESPONSES.producer;
-      } else if (promptLower.includes('shot 04') || promptLower.includes('critique')) {
-        aiText = AI_MOCK_RESPONSES.director;
-      } else if (promptLower.includes('quarterly') || promptLower.includes('revenue')) {
-        aiText = AI_MOCK_RESPONSES.studio_owner;
-      } else if (promptLower.includes('blocker') || promptLower.includes('velocity')) {
-        aiText = AI_MOCK_RESPONSES.project_manager;
-      }
-
-      setMessages((prev) => [...prev, { sender: 'ai', text: aiText }]);
+      setMessages((prev) => [...prev, { sender: 'ai', text: data.reply || 'System offline.', isTyping: true }]);
+    } catch (e) {
+      setMessages((prev) => [...prev, { sender: 'ai', text: '[ERROR] Connection to studio mainframe lost.', isTyping: true }]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
+  };
+
+  // Typewriter Effect Component
+  const TypewriterText = ({ text, isTyping }: { text: string, isTyping?: boolean }) => {
+    const [displayed, setDisplayed] = useState('');
+    
+    React.useEffect(() => {
+      if (!isTyping) {
+        setDisplayed(text);
+        return;
+      }
+      let i = 0;
+      setDisplayed('');
+      const interval = setInterval(() => {
+        setDisplayed(text.substring(0, i));
+        i++;
+        if (i > text.length) clearInterval(interval);
+      }, 15);
+      return () => clearInterval(interval);
+    }, [text, isTyping]);
+
+    return (
+      <span className={isTyping && displayed.length < text.length ? 'cyber-cursor' : ''}>
+        {displayed}
+      </span>
+    );
   };
 
   return (
@@ -91,7 +111,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ role, roleTitle, isOpe
               border: msg.sender === 'user' ? '1px solid rgba(109, 40, 217, 0.4)' : '1px solid var(--border-color)',
             }}
           >
-            <div style={styles.messageText}>{msg.text}</div>
+            <div style={styles.messageText}>
+              <TypewriterText text={msg.text} isTyping={msg.isTyping} />
+            </div>
           </div>
         ))}
         {isTyping && (
